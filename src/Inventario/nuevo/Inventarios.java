@@ -5,7 +5,14 @@
  */
 package Inventario.nuevo;
 
+import Clases.Conexion;
+import Inventario.original.Inventario_salonteatro;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,14 +20,95 @@ import javax.swing.JTabbedPane;
  */
 public class Inventarios extends javax.swing.JFrame {
     JTabbedPane tabs = new JTabbedPane();
+    DefaultTableModel modeloTeatro;
+    DefaultTableModel modeloQuimica;
+    DefaultTableModel modeloInformatica;
+    DefaultTableModel modeloDeporte;
+    
+    String[] titulos = {"ID", "Nombre","Referencia","Descripción","Tipo"};
     /**
      * Creates new form Inventarios
      */
     public Inventarios() {
-        this.tabs = pnlTabs;
-        
         initComponents();
+        this.tabs = pnlTabs;
+        this.modeloDeporte = new DefaultTableModel(null, titulos);
+        this.modeloInformatica = new DefaultTableModel(null, titulos);
+        this.modeloQuimica = new DefaultTableModel(null, titulos);
+        this.modeloTeatro = new DefaultTableModel(null, titulos);
+        tblDeporte.setModel(modeloDeporte);
+        tblInformatica.setModel(modeloInformatica);
+        tblQuimica.setModel(modeloQuimica);
+        tblTeatro.setModel(modeloTeatro);
         this.setLocationRelativeTo(null);
+    }
+    
+    
+       private void ConsultaSalonQuimica(){
+        try {
+            int i = 0; Object Ob[]=null;
+            Conexion con = new Conexion();
+            con.ConectarBD();
+            String SQL = "SELECT * FROM producto_salonteatro";
+            con.resultado = con.sentencia.executeQuery(SQL);
+            while (con.resultado.next()){
+                modeloQuimica.addRow(Ob);
+                modeloQuimica.setValueAt(con.resultado.getString("id_producto_t"),i,0);
+                modeloQuimica.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
+                modeloQuimica.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
+                modeloQuimica.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
+                modeloQuimica.setValueAt(con.resultado.getString("tipo_t"), i, 4);
+              
+                i++;
+            }
+            con.DesconectarBD();
+        } catch (SQLException ex){
+            Logger.getLogger(Inventario_salonteatro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+       private void ConsultaSalonDeporte(){
+        try {
+            int i = 0; Object Ob[]=null;
+            Conexion con = new Conexion();
+            con.ConectarBD();
+            String SQL = "SELECT * FROM producto_salonteatro";
+            con.resultado = con.sentencia.executeQuery(SQL);
+            while (con.resultado.next()){
+                modeloDeporte.addRow(Ob);
+                modeloDeporte.setValueAt(con.resultado.getString("id_producto_t"),i,0);
+                modeloDeporte.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
+                modeloDeporte.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
+                modeloDeporte.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
+                modeloDeporte.setValueAt(con.resultado.getString("tipo_t"), i, 4);
+              
+                i++;
+            }
+            con.DesconectarBD();
+        } catch (SQLException ex){
+            Logger.getLogger(Inventario_salonteatro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+       private void ConsultaSalonInformatica(){
+        try {
+            int i = 0; Object Ob[]=null;
+            Conexion con = new Conexion();
+            con.ConectarBD();
+            String SQL = "SELECT * FROM producto_salonteatro";
+            con.resultado = con.sentencia.executeQuery(SQL);
+            while (con.resultado.next()){
+                modeloInformatica.addRow(Ob);
+                modeloInformatica.setValueAt(con.resultado.getString("id_producto_t"),i,0);
+                modeloInformatica.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
+                modeloInformatica.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
+                modeloInformatica.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
+                modeloInformatica.setValueAt(con.resultado.getString("tipo_t"), i, 4);
+              
+                i++;
+            }
+            con.DesconectarBD();
+        } catch (SQLException ex){
+            Logger.getLogger(Inventario_salonteatro.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -38,23 +126,23 @@ public class Inventarios extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTeatro = new javax.swing.JTable();
         cmdIngresarTeatro = new javax.swing.JButton();
-        cmdUpdate = new javax.swing.JButton();
-        cmdRefresh = new javax.swing.JButton();
+        cmdUpdateTeatro = new javax.swing.JButton();
+        cmdRefreshTeatro = new javax.swing.JButton();
         panelQuimica = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblQuimica = new javax.swing.JTable();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         panelInformatica = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tblInformatica = new javax.swing.JTable();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tblDeporte = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -78,9 +166,14 @@ public class Inventarios extends javax.swing.JFrame {
 
         cmdIngresarTeatro.setText("Ingresar");
 
-        cmdUpdate.setText("Modificar");
+        cmdUpdateTeatro.setText("Modificar");
 
-        cmdRefresh.setText("Actualizar");
+        cmdRefreshTeatro.setText("Actualizar");
+        cmdRefreshTeatro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdRefreshTeatroActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelTeatroLayout = new javax.swing.GroupLayout(panelTeatro);
         panelTeatro.setLayout(panelTeatroLayout);
@@ -90,11 +183,11 @@ public class Inventarios extends javax.swing.JFrame {
                 .addContainerGap(33, Short.MAX_VALUE)
                 .addGroup(panelTeatroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(panelTeatroLayout.createSequentialGroup()
-                        .addComponent(cmdRefresh)
+                        .addComponent(cmdRefreshTeatro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cmdIngresarTeatro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmdUpdate))
+                        .addComponent(cmdUpdateTeatro))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30))
         );
@@ -105,14 +198,14 @@ public class Inventarios extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelTeatroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmdIngresarTeatro)
-                    .addComponent(cmdUpdate)
-                    .addComponent(cmdRefresh))
+                    .addComponent(cmdUpdateTeatro)
+                    .addComponent(cmdRefreshTeatro))
                 .addContainerGap())
         );
 
         pnlTabs.addTab("Salón de Teatro", panelTeatro);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblQuimica.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -123,7 +216,7 @@ public class Inventarios extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(tblQuimica);
 
         jButton7.setText("Modificar");
 
@@ -161,7 +254,7 @@ public class Inventarios extends javax.swing.JFrame {
 
         pnlTabs.addTab("Salón de Química", panelQuimica);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tblInformatica.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -172,7 +265,7 @@ public class Inventarios extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(tblInformatica);
 
         jButton4.setText("Modificar");
 
@@ -210,7 +303,7 @@ public class Inventarios extends javax.swing.JFrame {
 
         pnlTabs.addTab("Sala de Informática", panelInformatica);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        tblDeporte.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -221,7 +314,7 @@ public class Inventarios extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(jTable3);
+        jScrollPane4.setViewportView(tblDeporte);
 
         jButton1.setText("Actualizar");
 
@@ -282,6 +375,29 @@ public class Inventarios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cmdRefreshTeatroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdRefreshTeatroActionPerformed
+        try {
+            int i = 0; Object Ob[]=null;
+            Conexion con = new Conexion();
+            con.ConectarBD();
+            String SQL = "SELECT * FROM producto_salonteatro";
+            con.resultado = con.sentencia.executeQuery(SQL);
+            while (con.resultado.next()){
+                modeloTeatro.addRow(Ob);
+                modeloTeatro.setValueAt(con.resultado.getString("id_producto_t"),i,0);
+                modeloTeatro.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
+                modeloTeatro.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
+                modeloTeatro.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
+                modeloTeatro.setValueAt(con.resultado.getString("tipo_t"), i, 4);
+              
+                i++;
+            }
+            con.DesconectarBD();
+        } catch (SQLException ex){
+            Logger.getLogger(Inventario_salonteatro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cmdRefreshTeatroActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -319,8 +435,8 @@ public class Inventarios extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cmdIngresarTeatro;
-    private javax.swing.JButton cmdRefresh;
-    private javax.swing.JButton cmdUpdate;
+    private javax.swing.JButton cmdRefreshTeatro;
+    private javax.swing.JButton cmdUpdateTeatro;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -336,13 +452,13 @@ public class Inventarios extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JPanel panelInformatica;
     private javax.swing.JPanel panelQuimica;
     private javax.swing.JPanel panelTeatro;
     private javax.swing.JTabbedPane pnlTabs;
+    private javax.swing.JTable tblDeporte;
+    private javax.swing.JTable tblInformatica;
+    private javax.swing.JTable tblQuimica;
     private javax.swing.JTable tblTeatro;
     // End of variables declaration//GEN-END:variables
 }
