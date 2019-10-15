@@ -23,8 +23,9 @@ public class Conexion {
          try{
             final String Controlador = "com.mysql.jdbc.Driver";
             Class.forName(Controlador);
-            final String url_bd = "jdbc:mysql://192.168.88.100/inventariodatabase";
-            conexion = (Connection) DriverManager.getConnection(url_bd,"root","root");
+            final String url_bd = "jdbc:mysql://localhost:3306/inventariodatabase";
+            conexion = (Connection) DriverManager.getConnection(url_bd, "root", "root");
+            
             sentencia = (Statement) conexion.createStatement();
         } catch (ClassNotFoundException | SQLException ex){
             

@@ -4,6 +4,9 @@ package Clases;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Metdos_sql {
@@ -38,7 +41,7 @@ public class Metdos_sql {
            Connection conexion = null;
         try {
            conexion = ConexionBD.ConectarBD();
-           String sentencia_buscar=("SELECT num_doc,nombre FROM login WHERE correo='"+correo+"'");
+           String sentencia_buscar=("SELECT num_doc,nombre FROM login WHERE num_doc='"+correo+"'");
             sentencia_preparada= conexion.prepareStatement(sentencia_buscar);
             resultado = sentencia_preparada.executeQuery();
             if(resultado.next()){
@@ -72,13 +75,13 @@ public class Metdos_sql {
          return busqueda_usuario;
      }
      
-     public static boolean buscarUsuarioAlterno(String correo, String contraseña){
+     public static boolean buscarUsuarioAlterno(String id, String contraseña){
          boolean busqueda_usuario =false;
          
          Connection conexion = null;
          try {
              conexion = ConexionBD.ConectarBD();
-             String sentencia_buscar_usuario = ("SELECT nombre,correo,contraseña FROM login WHERE correo= '"+correo+"' && contraseña ='"+contraseña+"'");
+             String sentencia_buscar_usuario = ("SELECT nombre,correo,contraseña FROM login WHERE num_doc= '"+id+"' && contraseña ='"+contraseña+"'");
              sentencia_preparada= conexion.prepareStatement(sentencia_buscar_usuario);
              resultado =sentencia_preparada.executeQuery();
               if(resultado.next()){
@@ -90,4 +93,14 @@ public class Metdos_sql {
          }
          return busqueda_usuario;
      }
+     public void registrarMovimiento(String accion, String cantidad, String responsable){
+        try {
+            Conexion con = new Conexion();
+            con.ConectarBD();
+            String sql = "INSERT INTO inventario(accion,cantidad,fecha,responsable) VALUES ('"+accion+"','"+cantidad+"',NOW(),'"+responsable+"');";
+            con.sentencia.executeUpdate(sql);
+        } catch (SQLException ex) {
+        }
+    }
+     
 }

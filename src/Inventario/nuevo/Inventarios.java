@@ -7,9 +7,11 @@ package Inventario.nuevo;
 
 import Clases.Conexion;
 import Inventario.original.Inventario_salonteatro;
+import java.awt.Component;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
@@ -24,41 +26,106 @@ public class Inventarios extends javax.swing.JFrame {
     DefaultTableModel modeloQuimica;
     DefaultTableModel modeloInformatica;
     DefaultTableModel modeloDeporte;
+    public String userID;
     
-    String[] titulos = {"ID", "Nombre","Referencia","Descripción","Tipo"};
+    
+    String[] titulos = {"ID", "Nombre","Referencia","Descripción","Tipo","Cantidad"};
     /**
      * Creates new form Inventarios
+     * @param userID
      */
-    public Inventarios() {
+    public Inventarios(String userID) {
         initComponents();
+        this.userID = userID;
+        setLocationRelativeTo(null);
         this.tabs = pnlTabs;
-        this.modeloDeporte = new DefaultTableModel(null, titulos);
-        this.modeloInformatica = new DefaultTableModel(null, titulos);
-        this.modeloQuimica = new DefaultTableModel(null, titulos);
-        this.modeloTeatro = new DefaultTableModel(null, titulos);
+        this.modeloDeporte = new DefaultTableModel(null, titulos){
+            @Override
+            public boolean isCellEditable(int i, int i1){
+                return false;
+            }
+        };
+        this.modeloInformatica = new DefaultTableModel(null, titulos){
+            @Override
+            public boolean isCellEditable(int i, int i1){
+                return false;
+            }
+        };
+        this.modeloQuimica = new DefaultTableModel(null, titulos){
+            @Override
+            public boolean isCellEditable(int i, int i1){
+                return false;
+            }
+        };
+        this.modeloTeatro = new DefaultTableModel(null, titulos){
+            @Override
+            public boolean isCellEditable(int i, int i1){
+                return false;
+            }
+        };
         tblDeporte.setModel(modeloDeporte);
         tblInformatica.setModel(modeloInformatica);
         tblQuimica.setModel(modeloQuimica);
         tblTeatro.setModel(modeloTeatro);
-        this.setLocationRelativeTo(null);
+        
+                ConsultaSalonQuimica();
+                consultaSalonTeatro();
+                ConsultaSalonDeporte();
+                ConsultaSalonInformatica();
+        
     }
+   
     
-    
-       private void ConsultaSalonQuimica(){
+    private void consultaSalonTeatro(){
         try {
+            int j = modeloTeatro.getRowCount();
+            if (j > 0) {
+                modeloTeatro.setRowCount(0);
+            }
+            
             int i = 0; Object Ob[]=null;
             Conexion con = new Conexion();
             con.ConectarBD();
-            String SQL = "SELECT * FROM producto_salonteatro";
+            String SQL = "SELECT * FROM producto_salonteatro;";
+            con.resultado = con.sentencia.executeQuery(SQL);
+            while (con.resultado.next()){
+                modeloTeatro.addRow(Ob);
+                modeloTeatro.setValueAt(con.resultado.getString("id_producto"),i,0);
+                modeloTeatro.setValueAt(con.resultado.getString("nombre"), i, 1);
+                modeloTeatro.setValueAt(con.resultado.getString("referencia"), i, 2);
+                modeloTeatro.setValueAt(con.resultado.getString("descripcion"), i, 3);
+                modeloTeatro.setValueAt(con.resultado.getString("tipo"), i, 4);
+                modeloTeatro.setValueAt(con.resultado.getString("cantidad"), i, 5);
+                
+                i++;
+            }
+            con.DesconectarBD();
+            
+        } catch (SQLException ex){
+            Logger.getLogger(Inventario_salonteatro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+       private void ConsultaSalonQuimica(){
+        try {
+            int j = modeloQuimica.getRowCount();
+            if (j > 0) {
+                modeloQuimica.setRowCount(0);
+            }
+            
+            int i = 0; Object Ob[]=null;
+            Conexion con = new Conexion();
+            con.ConectarBD();
+            String SQL = "SELECT * FROM producto_salonquimica;";
             con.resultado = con.sentencia.executeQuery(SQL);
             while (con.resultado.next()){
                 modeloQuimica.addRow(Ob);
-                modeloQuimica.setValueAt(con.resultado.getString("id_producto_t"),i,0);
-                modeloQuimica.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
-                modeloQuimica.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
-                modeloQuimica.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
-                modeloQuimica.setValueAt(con.resultado.getString("tipo_t"), i, 4);
-              
+                modeloQuimica.setValueAt(con.resultado.getString("id_producto"),i,0);
+                modeloQuimica.setValueAt(con.resultado.getString("nombre"), i, 1);
+                modeloQuimica.setValueAt(con.resultado.getString("referencia"), i, 2);
+                modeloQuimica.setValueAt(con.resultado.getString("descripcion"), i, 3);
+                modeloQuimica.setValueAt(con.resultado.getString("tipo"), i, 4);
+                modeloQuimica.setValueAt(con.resultado.getString("cantidad"), i, 5);
                 i++;
             }
             con.DesconectarBD();
@@ -68,19 +135,24 @@ public class Inventarios extends javax.swing.JFrame {
     }
        private void ConsultaSalonDeporte(){
         try {
+            int j = modeloDeporte.getRowCount();
+            if (j > 0) {
+                modeloDeporte.setRowCount(0);
+            }
+            
             int i = 0; Object Ob[]=null;
             Conexion con = new Conexion();
             con.ConectarBD();
-            String SQL = "SELECT * FROM producto_salonteatro";
+            String SQL = "SELECT * FROM producto_salondeporte;";
             con.resultado = con.sentencia.executeQuery(SQL);
             while (con.resultado.next()){
                 modeloDeporte.addRow(Ob);
-                modeloDeporte.setValueAt(con.resultado.getString("id_producto_t"),i,0);
-                modeloDeporte.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
-                modeloDeporte.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
-                modeloDeporte.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
-                modeloDeporte.setValueAt(con.resultado.getString("tipo_t"), i, 4);
-              
+                modeloDeporte.setValueAt(con.resultado.getString("id_producto"),i,0);
+                modeloDeporte.setValueAt(con.resultado.getString("nombre"), i, 1);
+                modeloDeporte.setValueAt(con.resultado.getString("referencia"), i, 2);
+                modeloDeporte.setValueAt(con.resultado.getString("descripcion"), i, 3);
+                modeloDeporte.setValueAt(con.resultado.getString("tipo"), i, 4);
+                modeloDeporte.setValueAt(con.resultado.getString("cantidad"), i, 5);
                 i++;
             }
             con.DesconectarBD();
@@ -90,19 +162,24 @@ public class Inventarios extends javax.swing.JFrame {
     }
        private void ConsultaSalonInformatica(){
         try {
+            int j = modeloInformatica.getRowCount();
+            if (j > 0) {
+                modeloInformatica.setRowCount(0);
+            }
+            
             int i = 0; Object Ob[]=null;
             Conexion con = new Conexion();
             con.ConectarBD();
-            String SQL = "SELECT * FROM producto_salonteatro";
+            String SQL = "SELECT * FROM producto_saloninformatica;";
             con.resultado = con.sentencia.executeQuery(SQL);
             while (con.resultado.next()){
                 modeloInformatica.addRow(Ob);
-                modeloInformatica.setValueAt(con.resultado.getString("id_producto_t"),i,0);
-                modeloInformatica.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
-                modeloInformatica.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
-                modeloInformatica.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
-                modeloInformatica.setValueAt(con.resultado.getString("tipo_t"), i, 4);
-              
+                modeloInformatica.setValueAt(con.resultado.getString("id_producto"),i,0);
+                modeloInformatica.setValueAt(con.resultado.getString("nombre"), i, 1);
+                modeloInformatica.setValueAt(con.resultado.getString("referencia"), i, 2);
+                modeloInformatica.setValueAt(con.resultado.getString("descripcion"), i, 3);
+                modeloInformatica.setValueAt(con.resultado.getString("tipo"), i, 4);
+                modeloInformatica.setValueAt(con.resultado.getString("cantidad"), i, 5);
                 i++;
             }
             con.DesconectarBD();
@@ -120,6 +197,7 @@ public class Inventarios extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton11 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         pnlTabs = new javax.swing.JTabbedPane();
         panelTeatro = new javax.swing.JPanel();
@@ -127,25 +205,31 @@ public class Inventarios extends javax.swing.JFrame {
         tblTeatro = new javax.swing.JTable();
         cmdIngresarTeatro = new javax.swing.JButton();
         cmdUpdateTeatro = new javax.swing.JButton();
-        cmdRefreshTeatro = new javax.swing.JButton();
+        cmdEntradaTeatro = new javax.swing.JButton();
+        cmdSalirTeatro = new javax.swing.JButton();
         panelQuimica = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblQuimica = new javax.swing.JTable();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        cmdCerrarQuimica = new javax.swing.JButton();
+        cmdIngresarQuimica = new javax.swing.JButton();
+        cmdSalidaQuimica = new javax.swing.JButton();
+        cmdEntradaQuimica = new javax.swing.JButton();
         panelInformatica = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblInformatica = new javax.swing.JTable();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        cmdCerrarInformatica = new javax.swing.JButton();
+        cmdIngresarInformatica = new javax.swing.JButton();
+        cmdSalidaInformatica = new javax.swing.JButton();
+        cmdEntradaInformatica = new javax.swing.JButton();
+        panelDeporte = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblDeporte = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        cmdIngresarDeporte = new javax.swing.JButton();
+        cmdSalidaDeporte = new javax.swing.JButton();
+        cmdEntradaDeporte = new javax.swing.JButton();
+
+        jButton11.setText("jButton11");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -164,14 +248,31 @@ public class Inventarios extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblTeatro);
 
-        cmdIngresarTeatro.setText("Ingresar");
-
-        cmdUpdateTeatro.setText("Modificar");
-
-        cmdRefreshTeatro.setText("Actualizar");
-        cmdRefreshTeatro.addActionListener(new java.awt.event.ActionListener() {
+        cmdIngresarTeatro.setText("Registrar");
+        cmdIngresarTeatro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdRefreshTeatroActionPerformed(evt);
+                cmdIngresarTeatroActionPerformed(evt);
+            }
+        });
+
+        cmdUpdateTeatro.setText("Salida");
+        cmdUpdateTeatro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdUpdateTeatroActionPerformed(evt);
+            }
+        });
+
+        cmdEntradaTeatro.setText("Entrada");
+        cmdEntradaTeatro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEntradaTeatroActionPerformed(evt);
+            }
+        });
+
+        cmdSalirTeatro.setText("Cerrar");
+        cmdSalirTeatro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdSalirTeatroActionPerformed(evt);
             }
         });
 
@@ -180,16 +281,18 @@ public class Inventarios extends javax.swing.JFrame {
         panelTeatroLayout.setHorizontalGroup(
             panelTeatroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelTeatroLayout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addGroup(panelTeatroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(panelTeatroLayout.createSequentialGroup()
-                        .addComponent(cmdRefreshTeatro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cmdIngresarTeatro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmdEntradaTeatro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmdUpdateTeatro))
+                        .addComponent(cmdUpdateTeatro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdSalirTeatro))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
+                .addGap(32, 32, 32))
         );
         panelTeatroLayout.setVerticalGroup(
             panelTeatroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,7 +302,8 @@ public class Inventarios extends javax.swing.JFrame {
                 .addGroup(panelTeatroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmdIngresarTeatro)
                     .addComponent(cmdUpdateTeatro)
-                    .addComponent(cmdRefreshTeatro))
+                    .addComponent(cmdEntradaTeatro)
+                    .addComponent(cmdSalirTeatro))
                 .addContainerGap())
         );
 
@@ -218,27 +322,51 @@ public class Inventarios extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tblQuimica);
 
-        jButton7.setText("Modificar");
+        cmdCerrarQuimica.setText("Cerrar");
+        cmdCerrarQuimica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdCerrarQuimicaActionPerformed(evt);
+            }
+        });
 
-        jButton8.setText("Ingresar");
+        cmdIngresarQuimica.setText("Registrar");
+        cmdIngresarQuimica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdIngresarQuimicaActionPerformed(evt);
+            }
+        });
 
-        jButton9.setText("Actualizar");
+        cmdSalidaQuimica.setText("Salida");
+        cmdSalidaQuimica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdSalidaQuimicaActionPerformed(evt);
+            }
+        });
+
+        cmdEntradaQuimica.setText("Entrada");
+        cmdEntradaQuimica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEntradaQuimicaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelQuimicaLayout = new javax.swing.GroupLayout(panelQuimica);
         panelQuimica.setLayout(panelQuimicaLayout);
         panelQuimicaLayout.setHorizontalGroup(
             panelQuimicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelQuimicaLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelQuimicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap(31, Short.MAX_VALUE)
+                .addGroup(panelQuimicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelQuimicaLayout.createSequentialGroup()
-                        .addComponent(jButton9)
-                        .addGap(215, 215, 215)
-                        .addComponent(jButton8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton7))
+                        .addComponent(cmdIngresarQuimica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmdEntradaQuimica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdSalidaQuimica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdCerrarQuimica))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29))
+                .addGap(32, 32, 32))
         );
         panelQuimicaLayout.setVerticalGroup(
             panelQuimicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,9 +374,10 @@ public class Inventarios extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelQuimicaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9))
+                    .addComponent(cmdCerrarQuimica)
+                    .addComponent(cmdIngresarQuimica)
+                    .addComponent(cmdSalidaQuimica)
+                    .addComponent(cmdEntradaQuimica))
                 .addGap(0, 9, Short.MAX_VALUE))
         );
 
@@ -267,27 +396,51 @@ public class Inventarios extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(tblInformatica);
 
-        jButton4.setText("Modificar");
+        cmdCerrarInformatica.setText("Cerrar");
+        cmdCerrarInformatica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdCerrarInformaticaActionPerformed(evt);
+            }
+        });
 
-        jButton5.setText("Ingresar");
+        cmdIngresarInformatica.setText("Registrar");
+        cmdIngresarInformatica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdIngresarInformaticaActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("Actualizar");
+        cmdSalidaInformatica.setText("Salida");
+        cmdSalidaInformatica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdSalidaInformaticaActionPerformed(evt);
+            }
+        });
+
+        cmdEntradaInformatica.setText("Entrada");
+        cmdEntradaInformatica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEntradaInformaticaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelInformaticaLayout = new javax.swing.GroupLayout(panelInformatica);
         panelInformatica.setLayout(panelInformaticaLayout);
         panelInformaticaLayout.setHorizontalGroup(
             panelInformaticaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelInformaticaLayout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
-                .addGroup(panelInformaticaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap(31, Short.MAX_VALUE)
+                .addGroup(panelInformaticaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelInformaticaLayout.createSequentialGroup()
-                        .addComponent(jButton6)
-                        .addGap(215, 215, 215)
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4))
+                        .addComponent(cmdIngresarInformatica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmdEntradaInformatica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdSalidaInformatica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdCerrarInformatica))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29))
+                .addGap(32, 32, 32))
         );
         panelInformaticaLayout.setVerticalGroup(
             panelInformaticaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,9 +448,10 @@ public class Inventarios extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelInformaticaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
+                    .addComponent(cmdCerrarInformatica)
+                    .addComponent(cmdIngresarInformatica)
+                    .addComponent(cmdSalidaInformatica)
+                    .addComponent(cmdEntradaInformatica))
                 .addGap(0, 9, Short.MAX_VALUE))
         );
 
@@ -316,41 +470,66 @@ public class Inventarios extends javax.swing.JFrame {
         ));
         jScrollPane4.setViewportView(tblDeporte);
 
-        jButton1.setText("Actualizar");
+        jButton2.setText("Cerrar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Modificar");
+        cmdIngresarDeporte.setText("Registrar");
+        cmdIngresarDeporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdIngresarDeporteActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Ingresar");
+        cmdSalidaDeporte.setText("Salida");
+        cmdSalidaDeporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdSalidaDeporteActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(35, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(215, 215, 215)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        cmdEntradaDeporte.setText("Entrada");
+        cmdEntradaDeporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEntradaDeporteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelDeporteLayout = new javax.swing.GroupLayout(panelDeporte);
+        panelDeporte.setLayout(panelDeporteLayout);
+        panelDeporteLayout.setHorizontalGroup(
+            panelDeporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDeporteLayout.createSequentialGroup()
+                .addContainerGap(31, Short.MAX_VALUE)
+                .addGroup(panelDeporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(panelDeporteLayout.createSequentialGroup()
+                        .addComponent(cmdIngresarDeporte)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmdEntradaDeporte)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdSalidaDeporte)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28))
+                .addGap(32, 32, 32))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        panelDeporteLayout.setVerticalGroup(
+            panelDeporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDeporteLayout.createSequentialGroup()
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                .addGroup(panelDeporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(cmdIngresarDeporte)
+                    .addComponent(cmdSalidaDeporte)
+                    .addComponent(cmdEntradaDeporte))
                 .addGap(0, 9, Short.MAX_VALUE))
         );
 
-        pnlTabs.addTab("Salón de Deporte", jPanel4);
+        pnlTabs.addTab("Salón de Deporte", panelDeporte);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -358,7 +537,7 @@ public class Inventarios extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlTabs)
             .addGroup(layout.createSequentialGroup()
-                .addGap(204, 204, 204)
+                .addGap(216, 216, 216)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -375,28 +554,116 @@ public class Inventarios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cmdRefreshTeatroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdRefreshTeatroActionPerformed
-        try {
-            int i = 0; Object Ob[]=null;
-            Conexion con = new Conexion();
-            con.ConectarBD();
-            String SQL = "SELECT * FROM producto_salonteatro";
-            con.resultado = con.sentencia.executeQuery(SQL);
-            while (con.resultado.next()){
-                modeloTeatro.addRow(Ob);
-                modeloTeatro.setValueAt(con.resultado.getString("id_producto_t"),i,0);
-                modeloTeatro.setValueAt(con.resultado.getString("nombre_ot"), i, 1);
-                modeloTeatro.setValueAt(con.resultado.getString("referencia_ot"), i, 2);
-                modeloTeatro.setValueAt(con.resultado.getString("descripcion_t"), i, 3);
-                modeloTeatro.setValueAt(con.resultado.getString("tipo_t"), i, 4);
-              
-                i++;
-            }
-            con.DesconectarBD();
-        } catch (SQLException ex){
-            Logger.getLogger(Inventario_salonteatro.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_cmdRefreshTeatroActionPerformed
+    private void cmdIngresarTeatroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdIngresarTeatroActionPerformed
+        // TODO add your handling code here:
+        Ingreso in = new Ingreso(this,true,"producto_salonteatro", this.userID);
+        in.setVisible(true);
+        consultaSalonTeatro();
+    }//GEN-LAST:event_cmdIngresarTeatroActionPerformed
+
+    private void cmdIngresarQuimicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdIngresarQuimicaActionPerformed
+        Ingreso in = new Ingreso(this, true, "producto_salonQuimica", this.userID);
+        in.setVisible(true);
+        ConsultaSalonQuimica();
+    }//GEN-LAST:event_cmdIngresarQuimicaActionPerformed
+
+    private void cmdIngresarInformaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdIngresarInformaticaActionPerformed
+        // TODO add your handling code here:
+        Ingreso in = new Ingreso(this, true, "producto_saloninformatica", this.userID);
+        in.setVisible(true);
+        ConsultaSalonInformatica();
+    }//GEN-LAST:event_cmdIngresarInformaticaActionPerformed
+
+    private void cmdIngresarDeporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdIngresarDeporteActionPerformed
+        // TODO add your handling code here:
+        Ingreso in = new Ingreso(this, true, "producto_salondeporte", this.userID);
+        in.setVisible(true);
+        ConsultaSalonDeporte();
+    }//GEN-LAST:event_cmdIngresarDeporteActionPerformed
+
+    private void cmdUpdateTeatroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdUpdateTeatroActionPerformed
+        // TODO add your handling code here:
+        Salida sa = new Salida(this, true, "producto_salonteatro", this.userID);
+        sa.setVisible(true);
+        consultaSalonTeatro();
+    }//GEN-LAST:event_cmdUpdateTeatroActionPerformed
+
+    private void cmdEntradaDeporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEntradaDeporteActionPerformed
+        // TODO add your handling code here:
+        Entrada en = new Entrada(this, true, "producto_salondeporte", this.userID);
+        en.setVisible(true);
+        ConsultaSalonDeporte();
+    }//GEN-LAST:event_cmdEntradaDeporteActionPerformed
+
+    private void cmdSalidaDeporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalidaDeporteActionPerformed
+        // TODO add your handling code here:
+        Salida sa = new Salida(this, true, "producto_salondeporte", this.userID);
+        sa.setVisible(true);
+        ConsultaSalonDeporte();
+    }//GEN-LAST:event_cmdSalidaDeporteActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        Menu me = new Menu(this.userID);
+        this.dispose();
+        me.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void cmdEntradaTeatroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEntradaTeatroActionPerformed
+        // TODO add your handling code here:
+        Entrada en = new Entrada(this, true, "producto_salonteatro", this.userID);
+        en.setVisible(true);
+        consultaSalonTeatro();
+    }//GEN-LAST:event_cmdEntradaTeatroActionPerformed
+
+    private void cmdSalirTeatroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalirTeatroActionPerformed
+        // TODO add your handling code here:
+        Menu me = new Menu(this.userID);
+        this.dispose();
+        me.setVisible(true);
+    }//GEN-LAST:event_cmdSalirTeatroActionPerformed
+
+    private void cmdEntradaQuimicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEntradaQuimicaActionPerformed
+        // TODO add your handling code here:
+        Entrada en = new Entrada(this, true, "producto_salonquimica", this.userID);
+        en.setVisible(true);
+        ConsultaSalonQuimica();
+    }//GEN-LAST:event_cmdEntradaQuimicaActionPerformed
+
+    private void cmdSalidaInformaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalidaInformaticaActionPerformed
+        // TODO add your handling code here:
+        Salida sa = new Salida(this, true, "producto_saloninformatica",this.userID);
+        sa.setVisible(true);
+        ConsultaSalonInformatica();
+    }//GEN-LAST:event_cmdSalidaInformaticaActionPerformed
+
+    private void cmdEntradaInformaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEntradaInformaticaActionPerformed
+        // TODO add your handling code here:
+        Entrada en = new Entrada(this, true, "producto_saloninformatica",this.userID);
+        en.setVisible(true);
+        ConsultaSalonInformatica();
+    }//GEN-LAST:event_cmdEntradaInformaticaActionPerformed
+
+    private void cmdSalidaQuimicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalidaQuimicaActionPerformed
+        // TODO add your handling code here:
+        Salida sa = new Salida(this, true, "producto_salonquimica", this.userID);
+        sa.setVisible(true);
+        ConsultaSalonQuimica();
+    }//GEN-LAST:event_cmdSalidaQuimicaActionPerformed
+
+    private void cmdCerrarQuimicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCerrarQuimicaActionPerformed
+        // TODO add your handling code here:
+        Menu me = new Menu(this.userID);
+        this.dispose();
+        me.setVisible(true);
+    }//GEN-LAST:event_cmdCerrarQuimicaActionPerformed
+
+    private void cmdCerrarInformaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCerrarInformaticaActionPerformed
+        // TODO add your handling code here:
+        Menu me = new Menu(this.userID);
+        this.dispose();
+        me.setVisible(true);
+    }//GEN-LAST:event_cmdCerrarInformaticaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -428,30 +695,35 @@ public class Inventarios extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Inventarios().setVisible(true);
+                new Inventarios(new String()).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cmdCerrarInformatica;
+    private javax.swing.JButton cmdCerrarQuimica;
+    private javax.swing.JButton cmdEntradaDeporte;
+    private javax.swing.JButton cmdEntradaInformatica;
+    private javax.swing.JButton cmdEntradaQuimica;
+    private javax.swing.JButton cmdEntradaTeatro;
+    private javax.swing.JButton cmdIngresarDeporte;
+    private javax.swing.JButton cmdIngresarInformatica;
+    private javax.swing.JButton cmdIngresarQuimica;
     private javax.swing.JButton cmdIngresarTeatro;
-    private javax.swing.JButton cmdRefreshTeatro;
+    private javax.swing.JButton cmdSalidaDeporte;
+    private javax.swing.JButton cmdSalidaInformatica;
+    private javax.swing.JButton cmdSalidaQuimica;
+    private javax.swing.JButton cmdSalirTeatro;
     private javax.swing.JButton cmdUpdateTeatro;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPanel panelDeporte;
     private javax.swing.JPanel panelInformatica;
     private javax.swing.JPanel panelQuimica;
     private javax.swing.JPanel panelTeatro;
