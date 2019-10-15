@@ -14,6 +14,7 @@ import Clases.Metdos_sql;
  * @author acampoes
  */
 public class Login extends javax.swing.JFrame {
+    public static String userID;
     Metdos_sql metodos;
     /**
      * Creates new form login
@@ -22,7 +23,7 @@ public class Login extends javax.swing.JFrame {
         metodos = new Metdos_sql();
         initComponents();
         this.setLocationRelativeTo(null);
-       
+        this.userID = null;
     }
 
     /**
@@ -40,9 +41,9 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtUser = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JTextField();
         cmdRegistrar = new javax.swing.JButton();
         cmdIngresar = new javax.swing.JButton();
+        txtPassword = new javax.swing.JPasswordField();
 
         jToggleButton1.setText("jToggleButton1");
 
@@ -51,7 +52,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Inventario");
 
-        jLabel2.setText("Usuario: ");
+        jLabel2.setText("Documento:");
 
         jLabel3.setText("Contraseña: ");
 
@@ -82,8 +83,8 @@ public class Login extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtUser)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)))
+                            .addComponent(txtUser, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                            .addComponent(txtPassword)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(cmdRegistrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -113,20 +114,20 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(jLabel1)))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addGap(35, 35, 35)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(91, 91, 91))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addGap(38, 38, 38)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
         );
@@ -136,6 +137,8 @@ public class Login extends javax.swing.JFrame {
 
     private void cmdRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdRegistrarActionPerformed
         // TODO add your handling code here:
+        Registro re = new Registro(this, true);
+        re.setVisible(true);
     }//GEN-LAST:event_cmdRegistrarActionPerformed
 
     private void cmdIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdIngresarActionPerformed
@@ -146,8 +149,9 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "El campo usuario o contraseña no puede estar vacío.");
         }else if(metodos.buscarUsuarioAlterno(usuario, contrasena)){
             JOptionPane.showMessageDialog(rootPane, "Está a punto de iniciar sesión como: "+nombre);
+            this.userID = nombre;
             this.dispose();
-            Inventarios inventario = new Inventarios();
+            Menu inventario = new Menu(this.userID);
             inventario.setVisible(true);
         }else if(usuario.equals("idetp") && contrasena.equals("idetp")){
             JOptionPane.showMessageDialog(rootPane, "Está a punto de inisiar sesión como Administrador");
@@ -206,7 +210,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 }
