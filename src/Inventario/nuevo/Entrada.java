@@ -8,6 +8,7 @@ package Inventario.nuevo;
 import Clases.Conexion;
 import Clases.Metdos_sql;
 import Inventario.original.Inventario_salonteatro;
+import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
  * @author acampoes
  */
 public class Entrada extends javax.swing.JDialog {
+
     String userID;
     private String Database;
     Metdos_sql metodos = new Metdos_sql();
@@ -40,25 +42,29 @@ public class Entrada extends javax.swing.JDialog {
 
     }
 
-    public void guardarCantidad(int ID, int nuevaCantidad) {
+    public void guardarCantidad(int ID, int nuevaCantidad, String nombre) {
         try {
             Conexion con = new Conexion();
             con.ConectarBD();
 
-            System.out.println("cantidad ingresada "+nuevaCantidad);
+            System.out.println("cantidad ingresada " + nuevaCantidad);
             int res = obtenerCantidad() + nuevaCantidad;
-            System.out.println("cantidad actual"+obtenerCantidad());
-                System.out.println("nueva cantidad "+res);
-            
-            String SQL = "UPDATE " + this.Database + " SET cantidad=" + res + " WHERE id_producto = " + ID + ";";
-            int resultado = con.sentencia.executeUpdate(SQL);
-            metodos.registrarMovimiento("Ingreso", String.valueOf(nuevaCantidad),this.userID);
-            if (resultado == 1) {
-                JOptionPane.showMessageDialog(this, "Actualizado con éxito");
-                this.dispose();
+            System.out.println("cantidad actual" + obtenerCantidad());
+            System.out.println("nueva cantidad " + res);
+            if (nuevaCantidad >= obtenerCantidad() || nuevaCantidad !=0) {
+                String SQL = "UPDATE " + this.Database + " SET cantidad=" + res + " WHERE id_producto = " + ID + ";";
+                int resultado = con.sentencia.executeUpdate(SQL);
+                metodos.registrarMovimiento("Ingreso", String.valueOf(nuevaCantidad), this.userID, nombre);
+                System.out.println(nombre);
+                if (resultado == 1) {
+                    JOptionPane.showMessageDialog(this, "Actualizado con éxito");
+                    this.dispose();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Por favor revise la cantidad");
             }
 
-        } catch (Exception ex) {
+        } catch (SQLException | HeadlessException ex) {
             Logger.getLogger(Entrada.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -181,6 +187,8 @@ public class Entrada extends javax.swing.JDialog {
 
         jLabel12.setText("Cantidad adicional:");
 
+        spnCantidad.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -285,7 +293,8 @@ public class Entrada extends javax.swing.JDialog {
         // TODO add your handling code here:
         int id = Integer.parseInt(spnID.getModel().getValue().toString());
         int nuevaCantidad = Integer.parseInt(spnCantidad.getModel().getValue().toString());
-        guardarCantidad(id, nuevaCantidad);
+        String nombre = lblNombre.getText();
+        guardarCantidad(id, nuevaCantidad, nombre);
 
     }//GEN-LAST:event_cmdAceptarActionPerformed
 

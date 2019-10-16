@@ -93,11 +93,11 @@ public class Metdos_sql {
          }
          return busqueda_usuario;
      }
-     public void registrarMovimiento(String accion, String cantidad, String responsable){
+     public void registrarMovimiento(String accion, String cantidad, String responsable, String articulo){
         try {
             Conexion con = new Conexion();
             con.ConectarBD();
-            String sql = "INSERT INTO inventario(accion,cantidad,fecha,responsable) VALUES ('"+accion+"','"+cantidad+"',NOW(),'"+responsable+"');";
+            String sql = "INSERT INTO inventario(accion,articulo,cantidad,fecha,responsable) VALUES ('"+accion+"','"+articulo+"','"+cantidad+"',NOW(),'"+responsable+"');";
             con.sentencia.executeUpdate(sql);
         } catch (SQLException ex) {
         }

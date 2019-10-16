@@ -186,7 +186,7 @@ public class Ingreso extends javax.swing.JDialog {
                 String SQL = "INSERT INTO "+db+"(nombre,referencia,descripcion,tipo,cantidad) values ('"+nombre+"','"+referencia+"','"+descripcion+"','"+tipo+"',"+cantidad+");";
                 con.sentencia.executeUpdate(SQL);
                 con.DesconectarBD();
-                metodos.registrarMovimiento("Registro", String.valueOf(cantidad),this.userID);
+                metodos.registrarMovimiento("Registro", String.valueOf(cantidad),this.userID, nombre);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Cantidad no puede ser cero");

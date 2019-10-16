@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 public class Movimientos extends javax.swing.JFrame {
     String userID;
     DefaultTableModel modeloRegistro;
-    String[] titulos = {"ID", "Acción","Cantidad","Fecha/Hora","Responsable"};
+    String[] titulos = {"ID", "Acción", "Artículo","Cantidad","Fecha/Hora","Responsable"};
     /**
      * Creates new form Movimientos
      */
@@ -46,9 +46,10 @@ public class Movimientos extends javax.swing.JFrame {
                 modeloRegistro.addRow(Ob);
                 modeloRegistro.setValueAt(con.resultado.getString("id"),i,0);
                 modeloRegistro.setValueAt(con.resultado.getString("accion"), i, 1);
-                modeloRegistro.setValueAt(con.resultado.getString("cantidad"), i, 2);
-                modeloRegistro.setValueAt(con.resultado.getString("fecha"), i, 3);
-                modeloRegistro.setValueAt(con.resultado.getString("responsable"), i, 4);
+                modeloRegistro.setValueAt(con.resultado.getString("articulo"), i, 2);
+                modeloRegistro.setValueAt(con.resultado.getString("cantidad"), i, 3);
+                modeloRegistro.setValueAt(con.resultado.getString("fecha"), i, 4);
+                modeloRegistro.setValueAt(con.resultado.getString("responsable"), i, 5);
           
                 i++;
             }

@@ -37,7 +37,7 @@ public class Salida extends javax.swing.JDialog {
         return Integer.parseInt(lblCantidad.getText());
     }
 
-    public void guardarCantidad(int ID, int nuevaCantidad) {
+    public void guardarCantidad(int ID, int nuevaCantidad, String nombre) {
         try {
             Conexion con = new Conexion();
             con.ConectarBD();
@@ -47,7 +47,7 @@ public class Salida extends javax.swing.JDialog {
                 //    System.out.println("SI");
                 String SQL = "UPDATE " + this.Database + " SET cantidad=" + (obtenerCantidad() - nuevaCantidad) + " WHERE id_producto = " + ID + ";";
                 int resultado = con.sentencia.executeUpdate(SQL);
-                metodos.registrarMovimiento("Salida", String.valueOf(nuevaCantidad),this.userID);
+                metodos.registrarMovimiento("Salida", String.valueOf(nuevaCantidad),this.userID, nombre);
                 if (resultado == 1) {
                     JOptionPane.showMessageDialog(this, "Actualizado con éxito");
                     this.dispose();
@@ -257,7 +257,8 @@ public class Salida extends javax.swing.JDialog {
         // TODO add your handling code here:
         int id = Integer.parseInt(spnID.getModel().getValue().toString());
         int nuevaCantidad = Integer.parseInt(spnCantidad.getModel().getValue().toString());
-        guardarCantidad(id, nuevaCantidad);
+        String nombre = lblNombre.getText();
+        guardarCantidad(id, nuevaCantidad, nombre);
     }//GEN-LAST:event_cmdAceptarActionPerformed
 
     private void cmdConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdConsultarActionPerformed
